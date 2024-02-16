@@ -1,0 +1,166 @@
+﻿@model RegistrationUserInterface.Models.UserDetails
+   @using RegistrationUserInterface.Models
+@{
+    ViewBag.Title = "EditUserinfobyID";
+}
+<style>
+    .errorClass {
+        border-bottom: 1px solid red !important;
+    }
+
+    .ui-autocomplete {
+        max-height: 150px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    * html .ui-autocomplete {
+        height: 150px;
+    }
+</style>
+<!-- start page title -->
+<div class="row align-items-center">
+    <div class="col-sm-6">
+        <div class="page-title-box">
+            <h4>EditUserinfobyID</h4>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="float-right d-none d-md-block">
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="col-lg-12 col-md-12 col-sm-12 row labelwidth">
+                    <div class="col-lg-4 col-md-6 col-sm-6 row">
+                        <label for="lblCustomerCode" class="col-sm-4 col-form-label">User Name<b> :</b></label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.Username, null, new { @class = "form-control", id = "txtusername" })
+                            @Html.HiddenFor(m => m.Id, new { id = "hdnID" })
+                            </br>
+                        </div>
+
+                        <label for="lblCustomerCode" class="col-sm-4 col-form-label">Email<b>:</b></label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.Email, null, new { @class = "form-control", id = "txtEmail" })
+                            </br>
+                        </div>
+                        <label for="lblCustomerCode" class="col-sm-4 col-form-label">Phone Number<b>:</b></label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.PhoneNumber, null, new { @class = "form-control", id = "txtPhoneNumber" })
+                            </br>
+                        </div>
+                        <label for="lblCustomerCode" class="col-sm-4 col-form-label">SkillSet<b>:</b></label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.Skillset, null, new { @class = "form-control", id = "txtSkillset" })
+                            </br>
+                        </div>
+
+                        <label for="lblCustomerCode" class="col-sm-4 col-form-label">Hobby<b>:</b></label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.Hobby, null, new { @class = "form-control", id = "txtHobby" })
+                            </br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 text-left">
+                <div class="form-group pull-right">
+                    <a class="btn btn-secondary waves-effect waves-light mr-1" href="~/Registration/Index">Back</a>
+                    <button class="btn btn-primary" id="Save" onclick="UpdateuserdetailsByID();">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ModalSuccMsg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog cascading-modal" role="document">
+        <div class="modal-content">
+            <!--Header-->
+            <div style="text-align: center">
+                <div class="modal-header light-blue darken-3 white-text">
+                    
+                    <h4 class="title">
+                        <i class="fa fa-save"></i> Record saved Succesfully
+                        </br></br>
+                        <a class="btn btn-secondary waves-effect waves-light mr-1" style="background-color:gray" href="~/Registration/Index">Cancel</a>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary waves-effect waves-light mr-1" style="background-color:blue"lue" href="~/Registration/Index">Ok</a>
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ModalFailMsg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog cascading-modal" role="document">
+        <div class="modal-content">
+            <!--Header-->
+            <div style="text-align: center">
+                <div class="modal-header light-blue darken-3 white-text">
+                    <h4 class="title"><i class="fa fa-save"></i>Error Occured Record not saved!!!</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+        });
+        function UpdateuserdetailsByID() {
+            var obj = new Object();
+            obj.ID = $('#hdnID').val();
+            obj.userName = $('#txtusername').val();
+            obj.email = $('#txtEmail').val();
+            obj.phoneNumber = $('#txtPhoneNumber').val();
+            obj.skillset = $('#txtSkillset').val();
+            obj.hobby = $('#txtHobby').val();
+              $.ajax({
+              url: '@Url.Action("UpdateuserdetailsByID", "Registration")',
+              type: "POST",
+              dataType: 'Json',
+              contentType: 'application/json:charset=utf-8',
+                  data: JSON.stringify({ Modeldata: obj }),
+                  success: function (data, status) {
+                  debugger
+                  if (data == 'S') {
+                      SuccessRedirect();
+                  }
+                  else if (data == 'E') {
+                      SuccessRedirect();
+                  }
+                  else {
+                      FailMsg();
+                  }
+                  }
+              });
+        }
+        function SuccessRedirect() {
+            $('#ModalSuccMsg').modal('show');
+             window.location.href = '@Url.Action("Index", "Registration")';
+            window.setTimeout(function () {
+                $("#ModalFailMsg").modal("hide");
+            }, 2500);
+
+        }
+        function FailMsg() {
+            $('#ModalSuccMsg').modal('show');
+            window.setTimeout(function () {
+                $("#ModalFailMsg").modal("hide");
+            }, 2500);
+        }
+
+
+    </script>
+}
